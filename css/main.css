@@ -1,0 +1,86 @@
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2c3e50;
+    --button-color: #e74c3c;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-color: #fff;
+    --dark-text: #333;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --card-bg: rgba(255, 255, 255, 0.1);
+    --section-spacing: 50px;
+    --max-content-width: 1200px;
+    --text-align: right;
+    --nav-direction: row;
+    --logo-order: 0;
+    --nav-items-order: 1;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--text-color);
+    min-height: 100vh;
+    padding: 20px;
+    overflow-x: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: var(--text-align);
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--section-spacing);
+    width: 100%;
+    max-width: var(--max-content-width);
+    transition: margin-right 0.4s ease;
+    margin-top: 100px;
+}
+
+.main-container.cms-open {
+    margin-right: 350px;
+}
+
+/* Animation for new sections */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.section {
+    animation: fadeInUp 0.5s ease;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}

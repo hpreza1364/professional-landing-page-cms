@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لندیگ پیج حرفه‌ای با CMS</title>
+    <link rel="icon" type="image/x-icon" id="dynamicFavicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components/navigation.css">
+    <link rel="stylesheet" href="css/components/cms-panel.css">
+    <link rel="stylesheet" href="css/components/sections.css">
+    <link rel="stylesheet" href="css/components/modals.css">
+    <link rel="stylesheet" href="css/components/responsive.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="fixed-nav">
+        <div class="nav-logo">
+            <img id="navLogo" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>" alt="لوگو">
+        </div>
+        <div class="nav-container" id="navContainer"></div>
+    </div>
+    
+    <!-- CMS Controls -->
+    <div class="cms-toggle" id="cmsToggle">
+        <i class="fas fa-cog"></i>
+    </div>
+    
+    <div class="cms-controls" id="cmsControls">
+        <!-- CMS content will be loaded dynamically -->
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-container" id="mainContainer">
+        <section class="hero-section" id="section-hero" data-section="hero">
+            <img class="hero-bg" id="heroBg" src="" alt="پس‌زمینه">
+            <div class="hero-content">
+                <div class="business-info">
+                    <div class="logo-container" id="logoContainer">
+                        <img id="businessLogo" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>" alt="لوگوی کسب‌وکار">
+                        <div class="logo-upload-text">برای تغییر لوگو کلیک کنید</div>
+                    </div>
+                    <div class="business-text">
+                        <h1 contenteditable="true" class="editable" id="businessName">نام کسب‌وکار شما</h1>
+                        <p contenteditable="true" class="editable" id="businessTagline">توضیح کوتاه درباره کسب‌وکار شما</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Add Section Button -->
+    <div class="add-section-main" id="addSectionMain">
+        <i class="fas fa-plus"></i>
+    </div>
+    
+    <!-- Modals -->
+    <div class="section-modal" id="sectionModal">
+        <!-- Section modal content -->
+    </div>
+    
+    <div class="social-modal" id="socialModal">
+        <!-- Social modal content -->
+    </div>
+    
+    <div class="lightbox" id="lightbox">
+        <!-- Lightbox content -->
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+    
+    <!-- Hidden Inputs -->
+    <input type="file" id="logoUpload" accept="image/*" style="display: none;">
+    <input type="file" id="galleryUpload" accept="image/*" multiple style="display: none;">
+    <input type="file" id="aboutImageUpload" accept="image/*" style="display: none;">
+
+    <!-- JavaScript Files -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

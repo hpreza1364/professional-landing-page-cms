@@ -1,0 +1,318 @@
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    .main-container {
+        max-width: 100%;
+        padding: 0 20px;
+    }
+}
+
+@media (max-width: 992px) {
+    .hero-section {
+        padding: 30px;
+        min-height: 350px;
+    }
+    
+    .business-text h1 {
+        font-size: 2.4rem;
+    }
+    
+    .business-text p {
+        font-size: 1.1rem;
+    }
+    
+    .contact-map-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .section {
+        padding: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .cms-controls {
+        width: 100%;
+        right: -100%;
+    }
+    
+    .main-container.cms-open {
+        margin-right: 0;
+    }
+    
+    .business-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .logo-container {
+        margin-left: 0;
+        margin-bottom: 20px;
+    }
+    
+    .about-content {
+        flex-direction: column;
+    }
+    
+    .about-image {
+        width: 100%;
+        flex: none;
+        margin-bottom: 20px;
+    }
+    
+    .services-grid, .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .social-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .banking-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .fixed-nav {
+        padding: 8px 15px;
+        top: 10px;
+    }
+    
+    .nav-item {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    .hero-section {
+        padding: 25px 20px;
+        min-height: 300px;
+    }
+    
+    .business-text h1 {
+        font-size: 2rem;
+    }
+    
+    .business-text p {
+        font-size: 1rem;
+    }
+    
+    .section {
+        padding: 20px;
+    }
+    
+    .section-title {
+        font-size: 1.6rem;
+    }
+    
+    .add-section-main {
+        bottom: 20px;
+        left: 20px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    .cms-toggle {
+        top: 10px;
+        right: 10px;
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 576px) {
+    body {
+        padding: 10px;
+    }
+    
+    .main-container {
+        margin-top: 80px;
+        gap: 30px;
+    }
+    
+    .hero-section {
+        padding: 20px 15px;
+        min-height: 250px;
+    }
+    
+    .business-text h1 {
+        font-size: 1.8rem;
+    }
+    
+    .section {
+        padding: 15px;
+    }
+    
+    .section-title {
+        font-size: 1.4rem;
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    .fixed-nav {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+    
+    .nav-container {
+        order: 0;
+    }
+    
+    .nav-logo {
+        order: 1;
+    }
+    
+    .section-options {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+    }
+    
+    .section-option {
+        padding: 15px;
+    }
+    
+    .section-option i {
+        font-size: 24px;
+    }
+    
+    .social-options {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 10px;
+    }
+    
+    .social-option {
+        padding: 10px;
+    }
+    
+    .social-option i {
+        font-size: 20px;
+    }
+    
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+    }
+    
+    .gallery-item {
+        height: 120px;
+    }
+    
+    .map-container {
+        height: 300px;
+    }
+    
+    .contact-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .contact-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    
+    footer {
+        padding: 20px;
+        margin-top: 30px;
+    }
+    
+    .toast {
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        max-width: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .business-text h1 {
+        font-size: 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+    }
+    
+    .services-grid,
+    .testimonials-grid,
+    .social-grid,
+    .gallery-grid,
+    .banking-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-options {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .social-options {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .fixed-nav {
+        max-width: 95%;
+    }
+    
+    .nav-item {
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+}
+
+/* High DPI Screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .hero-section,
+    .section,
+    .fixed-nav,
+    .cms-controls {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+}
+
+/* Print Styles */
+@media print {
+    .cms-toggle,
+    .cms-controls,
+    .add-section-main,
+    .fixed-nav,
+    .delete-section,
+    .social-delete,
+    .gallery-delete,
+    .bank-delete,
+    .add-service-btn,
+    .add-testimonial-btn,
+    .add-social-btn,
+    .add-gallery-item,
+    .add-banking-btn,
+    .logo-upload-text,
+    .image-upload-text,
+    .map-instructions,
+    .map-controls {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+        color: black !important;
+        padding: 0;
+    }
+    
+    .hero-section,
+    .section {
+        background: white !important;
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+    }
+    
+    .main-container {
+        margin-top: 0;
+    }
+}
