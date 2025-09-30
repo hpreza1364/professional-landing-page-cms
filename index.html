@@ -9,12 +9,12 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <!-- CSS Files -->
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/components/navigation.css">
-    <link rel="stylesheet" href="css/components/cms-panel.css">
-    <link rel="stylesheet" href="css/components/sections.css">
-    <link rel="stylesheet" href="css/components/modals.css">
-    <link rel="stylesheet" href="css/components/responsive.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/components/navigation.css">
+    <link rel="stylesheet" href="./css/components/cms-panel.css">
+    <link rel="stylesheet" href="./css/components/sections.css">
+    <link rel="stylesheet" href="./css/components/modals.css">
+    <link rel="stylesheet" href="./css/components/responsive.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -31,11 +31,68 @@
     </div>
     
     <div class="cms-controls" id="cmsControls">
-        <!-- CMS content will be loaded dynamically -->
+        <div class="cms-section">
+            <h3><i class="fas fa-palette"></i> تنظیمات ظاهری</h3>
+            <div class="cms-control">
+                <label>رنگ اصلی</label>
+                <div class="color-picker">
+                    <input type="color" id="primaryColor" value="#3498db">
+                    <input type="text" id="primaryColorText" value="#3498db">
+                </div>
+            </div>
+            <div class="cms-control">
+                <label>رنگ ثانویه</label>
+                <div class="color-picker">
+                    <input type="color" id="secondaryColor" value="#2c3e50">
+                    <input type="text" id="secondaryColorText" value="#2c3e50">
+                </div>
+            </div>
+            <div class="cms-control">
+                <label>رنگ دکمه‌ها</label>
+                <div class="color-picker">
+                    <input type="color" id="buttonColor" value="#e74c3c">
+                    <input type="text" id="buttonColorText" value="#e74c3c">
+                </div>
+            </div>
+            <div class="cms-control">
+                <label>تراز متن</label>
+                <div class="alignment-controls">
+                    <div class="alignment-btn active" data-align="right">راست</div>
+                    <div class="alignment-btn" data-align="center">وسط</div>
+                    <div class="alignment-btn" data-align="left">چپ</div>
+                </div>
+            </div>
+            <div class="cms-control">
+                <button id="applyTheme">اعمال تغییرات</button>
+            </div>
+        </div>
+        
+        <div class="cms-section">
+            <h3><i class="fas fa-image"></i> تصویر پس‌زمینه</h3>
+            <div class="cms-control">
+                <input type="file" id="bgImageUpload" accept="image/*">
+                <button id="applyBgImage">اعمال تصویر</button>
+            </div>
+        </div>
+        
+        <div class="cms-section">
+            <h3><i class="fas fa-download"></i> ذخیره و بازیابی</h3>
+            <div class="cms-control">
+                <button id="saveData">ذخیره تنظیمات</button>
+            </div>
+            <div class="cms-control">
+                <button id="saveHTML">ذخیره به صورت HTML</button>
+            </div>
+            <div class="cms-control">
+                <input type="file" id="loadData" accept=".json">
+                <button id="importData">بارگذاری تنظیمات</button>
+            </div>
+        </div>
     </div>
     
-    <!-- Main Content -->
+    <!-- Main Content Container -->
     <div class="main-container" id="mainContainer">
+        <!-- Hero Section -->
         <section class="hero-section" id="section-hero" data-section="hero">
             <img class="hero-bg" id="heroBg" src="" alt="پس‌زمینه">
             <div class="hero-content">
@@ -58,29 +115,168 @@
         <i class="fas fa-plus"></i>
     </div>
     
-    <!-- Modals -->
+    <!-- Section Selection Modal -->
     <div class="section-modal" id="sectionModal">
-        <!-- Section modal content -->
+        <div class="section-modal-content">
+            <div class="section-modal-header">
+                <h2>افزودن بخش جدید</h2>
+                <div class="section-modal-close" id="sectionModalClose">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="section-options">
+                <div class="section-option" data-type="about">
+                    <i class="fas fa-info-circle"></i>
+                    <span>درباره ما</span>
+                </div>
+                <div class="section-option" data-type="services">
+                    <i class="fas fa-concierge-bell"></i>
+                    <span>خدمات</span>
+                </div>
+                <div class="section-option" data-type="testimonials">
+                    <i class="fas fa-comment-alt"></i>
+                    <span>نظرات مشتریان</span>
+                </div>
+                <div class="section-option" data-type="gallery">
+                    <i class="fas fa-images"></i>
+                    <span>گالری تصاویر</span>
+                </div>
+                <div class="section-option" data-type="social">
+                    <i class="fas fa-share-alt"></i>
+                    <span>شبکه‌های اجتماعی</span>
+                </div>
+                <div class="section-option" data-type="banking">
+                    <i class="fas fa-credit-card"></i>
+                    <span>اطلاعات بانکی</span>
+                </div>
+                <div class="section-option" data-type="contact">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>تماس و نقشه</span>
+                </div>
+            </div>
+        </div>
     </div>
     
+    <!-- Social Media Selection Modal -->
     <div class="social-modal" id="socialModal">
-        <!-- Social modal content -->
+        <div class="social-modal-content">
+            <div class="social-modal-header">
+                <h2>افزودن شبکه اجتماعی</h2>
+                <div class="social-modal-close" id="socialModalClose">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="social-options">
+                <div class="social-option" data-platform="instagram">
+                    <i class="fab fa-instagram"></i>
+                    <span>اینستاگرام</span>
+                </div>
+                <div class="social-option" data-platform="telegram">
+                    <i class="fab fa-telegram"></i>
+                    <span>تلگرام</span>
+                </div>
+                <div class="social-option" data-platform="whatsapp">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>واتساپ</span>
+                </div>
+                <div class="social-option" data-platform="twitter">
+                    <i class="fab fa-twitter"></i>
+                    <span>توییتر</span>
+                </div>
+                <div class="social-option" data-platform="linkedin">
+                    <i class="fab fa-linkedin"></i>
+                    <span>لینکدین</span>
+                </div>
+                <div class="social-option" data-platform="youtube">
+                    <i class="fab fa-youtube"></i>
+                    <span>یوتیوب</span>
+                </div>
+            </div>
+            <div class="social-input">
+                <input type="text" id="socialUsername" placeholder="نام کاربری یا آدرس">
+                <button id="addSocialConfirm">افزودن</button>
+            </div>
+        </div>
     </div>
     
+    <!-- Lightbox for Gallery -->
     <div class="lightbox" id="lightbox">
-        <!-- Lightbox content -->
+        <div class="lightbox-close" id="lightboxClose">
+            <i class="fas fa-times"></i>
+        </div>
+        <div class="lightbox-nav">
+            <button id="lightboxPrev"><i class="fas fa-chevron-right"></i></button>
+            <button id="lightboxNext"><i class="fas fa-chevron-left"></i></button>
+        </div>
+        <div class="lightbox-content">
+            <img id="lightboxImage" src="" alt="تصویر بزرگ‌شده">
+        </div>
     </div>
     
     <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
     
-    <!-- Hidden Inputs -->
+    <!-- Hidden file input for logo upload -->
     <input type="file" id="logoUpload" accept="image/*" style="display: none;">
+    
+    <!-- Hidden file input for gallery upload -->
     <input type="file" id="galleryUpload" accept="image/*" multiple style="display: none;">
+    
+    <!-- Hidden file input for about image upload -->
     <input type="file" id="aboutImageUpload" accept="image/*" style="display: none;">
 
-    <!-- JavaScript Files -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script type="module" src="js/main.js"></script>
+    
+    <!-- JavaScript Files -->
+    <script src="./js/main.js"></script>
+    <script src="./js/modules/cms-manager.js"></script>
+    <script src="./js/modules/section-manager.js"></script>
+    <script src="./js/modules/navigation-manager.js"></script>
+    <script src="./js/modules/file-manager.js"></script>
+    <script src="./js/modules/map-manager.js"></script>
+    <script src="./js/modules/utils.js"></script>
+
+    <script>
+        // Fallback script in case modules don't load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Basic functionality as fallback
+            const addSectionBtn = document.getElementById('addSectionMain');
+            const sectionModal = document.getElementById('sectionModal');
+            
+            if (addSectionBtn && sectionModal) {
+                addSectionBtn.addEventListener('click', function() {
+                    sectionModal.classList.add('active');
+                    console.log('Add section clicked!');
+                });
+            }
+
+            // Close modal when clicking X
+            const sectionModalClose = document.getElementById('sectionModalClose');
+            if (sectionModalClose) {
+                sectionModalClose.addEventListener('click', function() {
+                    sectionModal.classList.remove('active');
+                });
+            }
+
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === sectionModal) {
+                    sectionModal.classList.remove('active');
+                }
+            });
+
+            // Section selection
+            const sectionOptions = document.querySelectorAll('.section-option');
+            sectionOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const type = this.getAttribute('data-type');
+                    alert(`بخش ${type} انتخاب شد! (این پیام نشان می‌دهد که JavaScript کار می‌کند)`);
+                    sectionModal.classList.remove('active');
+                });
+            });
+
+            console.log('Fallback JavaScript loaded successfully!');
+        });
+    </script>
 </body>
 </html>
