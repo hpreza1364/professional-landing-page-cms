@@ -502,7 +502,7 @@
                         <section class="section" id="${sectionId}" data-section="about">
                             <div class="section-title">
                                 <div class="section-title-text" contenteditable="true">درباره ما</div>
-                                <div class="delete-section" onclick="deleteSection('${sectionId}')">حذف</div>
+                                <div class="delete-section" data-section-id="${sectionId}">حذف</div>
                             </div>
                             <div class="about-content">
                                 <div class="about-image" id="aboutImage-${sectionId}">
@@ -522,7 +522,7 @@
                         <section class="section" id="${sectionId}" data-section="services">
                             <div class="section-title">
                                 <div class="section-title-text" contenteditable="true">خدمات ما</div>
-                                <div class="delete-section" onclick="deleteSection('${sectionId}')">حذف</div>
+                                <div class="delete-section" data-section-id="${sectionId}">حذف</div>
                             </div>
                             <div class="services-grid">
                                 <div class="service-card">
@@ -537,7 +537,7 @@
                                     <h3 contenteditable="true">پشتیبانی</h3>
                                     <p contenteditable="true">توضیح مختصری درباره این خدمت ارائه دهید.</p>
                                 </div>
-                                <div class="add-service-btn" onclick="addServiceCard('${sectionId}')">
+                                <div class="add-service-btn" data-section-id="${sectionId}">
                                     <i class="fas fa-plus"></i>
                                     <span>افزودن خدمت جدید</span>
                                 </div>
@@ -551,7 +551,7 @@
                         <section class="section" id="${sectionId}" data-section="testimonials">
                             <div class="section-title">
                                 <div class="section-title-text" contenteditable="true">نظرات مشتریان</div>
-                                <div class="delete-section" onclick="deleteSection('${sectionId}')">حذف</div>
+                                <div class="delete-section" data-section-id="${sectionId}">حذف</div>
                             </div>
                             <div class="testimonials-grid">
                                 <div class="testimonial-card">
@@ -559,10 +559,10 @@
                                     <div class="client" contenteditable="true">- محمد رضایی</div>
                                 </div>
                                 <div class="testimonial-card">
-                                    <p contentedtable="true">"پشتیبانی عالی و خدمات با کیفیت. حتماً همکاری خواهیم کرد."</p>
+                                    <p contenteditable="true">"پشتیبانی عالی و خدمات با کیفیت. حتماً همکاری خواهیم کرد."</p>
                                     <div class="client" contenteditable="true">- فاطمه محمدی</div>
                                 </div>
-                                <div class="add-testimonial-btn" onclick="addTestimonialCard('${sectionId}')">
+                                <div class="add-testimonial-btn" data-section-id="${sectionId}">
                                     <i class="fas fa-plus"></i>
                                     <span>افزودن نظر جدید</span>
                                 </div>
@@ -576,10 +576,10 @@
                         <section class="section" id="${sectionId}" data-section="gallery">
                             <div class="section-title">
                                 <div class="section-title-text" contenteditable="true">گالری تصاویر</div>
-                                <div class="delete-section" onclick="deleteSection('${sectionId}')">حذف</div>
+                                <div class="delete-section" data-section-id="${sectionId}">حذف</div>
                             </div>
                             <div class="gallery-grid">
-                                <div class="add-gallery-item" onclick="document.getElementById('galleryUpload').click()">
+                                <div class="add-gallery-item" data-section-id="${sectionId}">
                                     <i class="fas fa-plus"></i>
                                     <span>افزودن تصویر</span>
                                 </div>
@@ -593,10 +593,10 @@
                         <section class="section" id="${sectionId}" data-section="social">
                             <div class="section-title">
                                 <div class="section-title-text" contenteditable="true">شبکه‌های اجتماعی</div>
-                                <div class="delete-section" onclick="deleteSection('${sectionId}')">حذف</div>
+                                <div class="delete-section" data-section-id="${sectionId}">حذف</div>
                             </div>
                             <div class="social-grid">
-                                <div class="add-social-btn" onclick="openSocialModal()">
+                                <div class="add-social-btn" data-section-id="${sectionId}">
                                     <i class="fas fa-plus"></i>
                                     <span>افزودن شبکه اجتماعی</span>
                                 </div>
@@ -610,7 +610,7 @@
                         <section class="section" id="${sectionId}" data-section="banking">
                             <div class="section-title">
                                 <div class="section-title-text" contenteditable="true">اطلاعات بانکی</div>
-                                <div class="delete-section" onclick="deleteSection('${sectionId}')">حذف</div>
+                                <div class="delete-section" data-section-id="${sectionId}">حذف</div>
                             </div>
                             <div class="banking-grid">
                                 <div class="banking-card">
@@ -619,13 +619,13 @@
                                     </div>
                                     <div class="bank-info">
                                         <div contenteditable="true">بانک ملی</div>
-                                        <div class="bank-number" contenteditable="true" onclick="copyToClipboard(this)">6037-9910-1234-5678</div>
+                                        <div class="bank-number" contenteditable="true">6037-9910-1234-5678</div>
                                     </div>
-                                    <div class="bank-delete" onclick="deleteBankCard(this)">
+                                    <div class="bank-delete">
                                         <i class="fas fa-times"></i>
                                     </div>
                                 </div>
-                                <div class="add-banking-btn" onclick="addBankCard('${sectionId}')">
+                                <div class="add-banking-btn" data-section-id="${sectionId}">
                                     <i class="fas fa-plus"></i>
                                     <span>افزودن حساب بانکی</span>
                                 </div>
@@ -639,7 +639,7 @@
                         <section class="section" id="${sectionId}" data-section="contact">
                             <div class="section-title">
                                 <div class="section-title-text" contenteditable="true">تماس با ما</div>
-                                <div class="delete-section" onclick="deleteSection('${sectionId}')">حذف</div>
+                                <div class="delete-section" data-section-id="${sectionId}">حذف</div>
                             </div>
                             <div class="contact-map-section">
                                 <div class="contact-grid">
@@ -673,10 +673,15 @@
                                 </div>
                                 <div class="map-container">
                                     <div class="map-instructions">برای تغییر موقعیت روی نقشه کلیک کنید</div>
-                                    <div id="map-${sectionId}" style="height: 400px;"></div>
+                                    <div id="map-${sectionId}" style="height: 400px; background: var(--glass-bg); display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+                                        <div style="text-align: center; color: var(--text-color);">
+                                            <i class="fas fa-map" style="font-size: 48px; margin-bottom: 10px; opacity: 0.5;"></i>
+                                            <p>نقشه در اینجا نمایش داده می‌شود</p>
+                                        </div>
+                                    </div>
                                     <div class="map-controls">
                                         <input type="text" id="mapSearch-${sectionId}" placeholder="جستجوی آدرس...">
-                                        <button onclick="searchAddress('${sectionId}')">جستجو</button>
+                                        <button data-section-id="${sectionId}">جستجو</button>
                                     </div>
                                 </div>
                             </div>
@@ -688,13 +693,90 @@
             // Add section to the page
             mainContainer.insertAdjacentHTML('beforeend', sectionHTML);
             
-            // Add about image event listener
-            if (type === 'about') {
-                const aboutImage = document.getElementById(`aboutImage-${sectionId}`);
-                aboutImage.addEventListener('click', function() {
-                    aboutImageUpload.click();
+            // Add event listeners to the new section
+            setTimeout(() => {
+                const newSection = document.getElementById(sectionId);
+                
+                // Delete button
+                const deleteBtn = newSection.querySelector('.delete-section');
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', function() {
+                        deleteSection(sectionId);
+                    });
+                }
+                
+                // Add service button
+                const addServiceBtn = newSection.querySelector('.add-service-btn');
+                if (addServiceBtn) {
+                    addServiceBtn.addEventListener('click', function() {
+                        addServiceCard(sectionId);
+                    });
+                }
+                
+                // Add testimonial button
+                const addTestimonialBtn = newSection.querySelector('.add-testimonial-btn');
+                if (addTestimonialBtn) {
+                    addTestimonialBtn.addEventListener('click', function() {
+                        addTestimonialCard(sectionId);
+                    });
+                }
+                
+                // Add social button
+                const addSocialBtn = newSection.querySelector('.add-social-btn');
+                if (addSocialBtn) {
+                    addSocialBtn.addEventListener('click', function() {
+                        openSocialModal();
+                    });
+                }
+                
+                // Add gallery button
+                const addGalleryBtn = newSection.querySelector('.add-gallery-item');
+                if (addGalleryBtn) {
+                    addGalleryBtn.addEventListener('click', function() {
+                        galleryUpload.click();
+                    });
+                }
+                
+                // Add banking button
+                const addBankingBtn = newSection.querySelector('.add-banking-btn');
+                if (addBankingBtn) {
+                    addBankingBtn.addEventListener('click', function() {
+                        addBankCard(sectionId);
+                    });
+                }
+                
+                // Bank delete buttons
+                const bankDeleteBtns = newSection.querySelectorAll('.bank-delete');
+                bankDeleteBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        deleteBankCard(this);
+                    });
                 });
-            }
+                
+                // Bank number copy
+                const bankNumbers = newSection.querySelectorAll('.bank-number');
+                bankNumbers.forEach(number => {
+                    number.addEventListener('click', function() {
+                        copyToClipboard(this);
+                    });
+                });
+                
+                // About image upload
+                if (type === 'about') {
+                    const aboutImage = document.getElementById(`aboutImage-${sectionId}`);
+                    aboutImage.addEventListener('click', function() {
+                        aboutImageUpload.click();
+                    });
+                }
+                
+                // Map search button
+                const mapSearchBtn = newSection.querySelector('.map-controls button');
+                if (mapSearchBtn) {
+                    mapSearchBtn.addEventListener('click', function() {
+                        searchAddress(sectionId);
+                    });
+                }
+            }, 100);
             
             // Add section to sections array
             sections.push({
@@ -707,7 +789,22 @@
             // Update navigation
             updateNavigation();
             
-            showToast('بخش جدید با موفقیت اضافه شد');
+            showToast(`بخش "${getSectionTypeName(type)}" با موفقیت اضافه شد`);
+        }
+        
+        // Get section type name in Persian
+        function getSectionTypeName(type) {
+            const names = {
+                'about': 'درباره ما',
+                'services': 'خدمات',
+                'testimonials': 'نظرات مشتریان',
+                'gallery': 'گالری تصاویر',
+                'social': 'شبکه‌های اجتماعی',
+                'banking': 'اطلاعات بانکی',
+                'contact': 'تماس و نقشه'
+            };
+            
+            return names[type] || type;
         }
         
         // Delete a section
@@ -784,12 +881,19 @@
                     <div contenteditable="true">${getSocialPlatformName(currentSocialPlatform)}</div>
                     <div class="social-username">${socialUsername.value}</div>
                 </div>
-                <div class="social-delete" onclick="deleteSocialCard(this)">
+                <div class="social-delete">
                     <i class="fas fa-times"></i>
                 </div>
             `;
             
             socialGrid.insertBefore(socialCard, addButton);
+            
+            // Add event listeners to the new social card
+            const socialDeleteBtn = socialCard.querySelector('.social-delete');
+            socialDeleteBtn.addEventListener('click', function() {
+                deleteSocialCard(this);
+            });
+            
             closeSocialModal();
             showToast('شبکه اجتماعی با موفقیت اضافه شد');
         }
@@ -827,14 +931,26 @@
                 </div>
                 <div class="bank-info">
                     <div contenteditable="true">نام بانک</div>
-                    <div class="bank-number" contenteditable="true" onclick="copyToClipboard(this)">شماره حساب یا کارت</div>
+                    <div class="bank-number" contenteditable="true">شماره حساب یا کارت</div>
                 </div>
-                <div class="bank-delete" onclick="deleteBankCard(this)">
+                <div class="bank-delete">
                     <i class="fas fa-times"></i>
                 </div>
             `;
             
             bankingGrid.insertBefore(bankingCard, addButton);
+            
+            // Add event listeners to the new bank card
+            const bankDeleteBtn = bankingCard.querySelector('.bank-delete');
+            bankDeleteBtn.addEventListener('click', function() {
+                deleteBankCard(this);
+            });
+            
+            const bankNumber = bankingCard.querySelector('.bank-number');
+            bankNumber.addEventListener('click', function() {
+                copyToClipboard(this);
+            });
+            
             showToast('حساب بانکی با موفقیت اضافه شد');
         }
         
@@ -855,6 +971,8 @@
                     element.innerText = originalText;
                 }, 2000);
                 showToast('متن با موفقیت کپی شد');
+            }).catch(function() {
+                showToast('خطا در کپی کردن متن');
             });
         }
         
@@ -1287,10 +1405,17 @@
             galleryItem.className = 'gallery-item';
             galleryItem.innerHTML = `
                 <img src="${imageSrc}" alt="تصویر گالری">
-                <div class="gallery-delete" onclick="deleteGalleryImage(this)">
+                <div class="gallery-delete">
                     <i class="fas fa-times"></i>
                 </div>
             `;
+            
+            // Add event listeners to the new gallery item
+            const galleryDeleteBtn = galleryItem.querySelector('.gallery-delete');
+            galleryDeleteBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                deleteGalleryImage(this);
+            });
             
             // Add click event to open lightbox
             galleryItem.addEventListener('click', function(e) {
