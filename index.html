@@ -227,56 +227,1121 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
-    <!-- JavaScript Files -->
-    <script src="./js/main.js"></script>
-    <script src="./js/modules/cms-manager.js"></script>
-    <script src="./js/modules/section-manager.js"></script>
-    <script src="./js/modules/navigation-manager.js"></script>
-    <script src="./js/modules/file-manager.js"></script>
-    <script src="./js/modules/map-manager.js"></script>
-    <script src="./js/modules/utils.js"></script>
-
+    <!-- All JavaScript in one file -->
     <script>
-        // Fallback script in case modules don't load
+        // Global variables
+        let sections = [];
+        let currentSectionType = '';
+        let currentSocialPlatform = '';
+        let galleryImages = [];
+        let currentGalleryIndex = 0;
+        let map = null;
+        let mapMarker = null;
+        
+        // DOM elements
+        const cmsToggle = document.getElementById('cmsToggle');
+        const cmsControls = document.getElementById('cmsControls');
+        const mainContainer = document.getElementById('mainContainer');
+        const addSectionMain = document.getElementById('addSectionMain');
+        const sectionModal = document.getElementById('sectionModal');
+        const sectionModalClose = document.getElementById('sectionModalClose');
+        const sectionOptions = document.querySelectorAll('.section-option');
+        const socialModal = document.getElementById('socialModal');
+        const socialModalClose = document.getElementById('socialModalClose');
+        const socialOptions = document.querySelectorAll('.social-option');
+        const addSocialConfirm = document.getElementById('addSocialConfirm');
+        const socialUsername = document.getElementById('socialUsername');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxClose = document.getElementById('lightboxClose');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const lightboxPrev = document.getElementById('lightboxPrev');
+        const lightboxNext = document.getElementById('lightboxNext');
+        const logoUpload = document.getElementById('logoUpload');
+        const logoContainer = document.getElementById('logoContainer');
+        const businessLogo = document.getElementById('businessLogo');
+        const navLogo = document.getElementById('navLogo');
+        const galleryUpload = document.getElementById('galleryUpload');
+        const aboutImageUpload = document.getElementById('aboutImageUpload');
+        const navContainer = document.getElementById('navContainer');
+        const dynamicFavicon = document.getElementById('dynamicFavicon');
+        const toast = document.getElementById('toast');
+        
+        // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
-            // Basic functionality as fallback
-            const addSectionBtn = document.getElementById('addSectionMain');
-            const sectionModal = document.getElementById('sectionModal');
+            console.log('Page loaded successfully!');
             
-            if (addSectionBtn && sectionModal) {
-                addSectionBtn.addEventListener('click', function() {
-                    sectionModal.classList.add('active');
-                    console.log('Add section clicked!');
-                });
-            }
-
-            // Close modal when clicking X
-            const sectionModalClose = document.getElementById('sectionModalClose');
-            if (sectionModalClose) {
-                sectionModalClose.addEventListener('click', function() {
-                    sectionModal.classList.remove('active');
-                });
-            }
-
-            // Close modal when clicking outside
-            window.addEventListener('click', function(event) {
-                if (event.target === sectionModal) {
-                    sectionModal.classList.remove('active');
-                }
-            });
-
+            // Load saved data if available
+            loadSavedData();
+            
+            // Initialize navigation
+            updateNavigation();
+            
+            // Event listeners
+            cmsToggle.addEventListener('click', toggleCMS);
+            addSectionMain.addEventListener('click', openSectionModal);
+            sectionModalClose.addEventListener('click', closeSectionModal);
+            socialModalClose.addEventListener('click', closeSocialModal);
+            lightboxClose.addEventListener('click', closeLightbox);
+            lightboxPrev.addEventListener('click', showPrevImage);
+            lightboxNext.addEventListener('click', showNextImage);
+            logoContainer.addEventListener('click', () => logoUpload.click());
+            logoUpload.addEventListener('change', handleLogoUpload);
+            
             // Section selection
-            const sectionOptions = document.querySelectorAll('.section-option');
             sectionOptions.forEach(option => {
                 option.addEventListener('click', function() {
-                    const type = this.getAttribute('data-type');
-                    alert(`بخش ${type} انتخاب شد! (این پیام نشان می‌دهد که JavaScript کار می‌کند)`);
-                    sectionModal.classList.remove('active');
+                    currentSectionType = this.getAttribute('data-type');
+                    addSection(currentSectionType);
+                    closeSectionModal();
                 });
             });
+            
+            // Social platform selection
+            socialOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    socialOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    currentSocialPlatform = this.getAttribute('data-platform');
+                });
+            });
+            
+            // Add social media
+            addSocialConfirm.addEventListener('click', addSocialMedia);
+            
+            // Theme controls
+            document.getElementById('applyTheme').addEventListener('click', applyTheme);
+            document.getElementById('applyBgImage').addEventListener('click', applyBackgroundImage);
+            document.getElementById('saveData').addEventListener('click', saveData);
+            document.getElementById('saveHTML').addEventListener('click', saveHTML);
+            document.getElementById('importData').addEventListener('click', importData);
+            
+            // Color picker synchronization
+            document.getElementById('primaryColor').addEventListener('input', function() {
+                document.getElementById('primaryColorText').value = this.value;
+            });
+            document.getElementById('primaryColorText').addEventListener('input', function() {
+                document.getElementById('primaryColor').value = this.value;
+            });
+            
+            document.getElementById('secondaryColor').addEventListener('input', function() {
+                document.getElementById('secondaryColorText').value = this.value;
+            });
+            document.getElementById('secondaryColorText').addEventListener('input', function() {
+                document.getElementById('secondaryColor').value = this.value;
+            });
+            
+            document.getElementById('buttonColor').addEventListener('input', function() {
+                document.getElementById('buttonColorText').value = this.value;
+            });
+            document.getElementById('buttonColorText').addEventListener('input', function() {
+                document.getElementById('buttonColor').value = this.value;
+            });
+            
+            // Text alignment controls
+            document.querySelectorAll('.alignment-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.alignment-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const alignment = this.getAttribute('data-align');
+                    document.documentElement.style.setProperty('--text-align', alignment);
+                    
+                    // Update navigation layout based on alignment
+                    updateNavLayout(alignment);
+                });
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === sectionModal) {
+                    closeSectionModal();
+                }
+                if (event.target === socialModal) {
+                    closeSocialModal();
+                }
+                if (event.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+            
+            // Initialize Sortable for drag and drop
+            initSortable();
 
-            console.log('Fallback JavaScript loaded successfully!');
+            // Handle gallery upload
+            galleryUpload.addEventListener('change', handleGalleryUpload);
+
+            console.log('All event listeners initialized!');
         });
+        
+        // Update navigation layout based on text alignment
+        function updateNavLayout(alignment) {
+            const fixedNav = document.querySelector('.fixed-nav');
+            
+            if (alignment === 'right') {
+                // RTL layout - logo on the right
+                document.documentElement.style.setProperty('--nav-direction', 'row');
+                document.documentElement.style.setProperty('--logo-order', '1');
+                document.documentElement.style.setProperty('--nav-items-order', '0');
+                fixedNav.style.flexDirection = 'row';
+            } else if (alignment === 'left') {
+                // LTR layout - logo on the left
+                document.documentElement.style.setProperty('--nav-direction', 'row');
+                document.documentElement.style.setProperty('--logo-order', '0');
+                document.documentElement.style.setProperty('--nav-items-order', '1');
+                fixedNav.style.flexDirection = 'row';
+            } else {
+                // Center alignment - logo above nav items
+                document.documentElement.style.setProperty('--nav-direction', 'column');
+                document.documentElement.style.setProperty('--logo-order', '0');
+                document.documentElement.style.setProperty('--nav-items-order', '1');
+                fixedNav.style.flexDirection = 'column';
+            }
+        }
+        
+        // Toggle CMS controls panel
+        function toggleCMS() {
+            cmsControls.classList.toggle('active');
+            mainContainer.classList.toggle('cms-open');
+            showToast('پنل مدیریت ' + (cmsControls.classList.contains('active') ? 'باز' : 'بسته') + ' شد');
+        }
+        
+        // Open section selection modal
+        function openSectionModal() {
+            sectionModal.classList.add('active');
+            showToast('منوی افزودن بخش باز شد');
+        }
+        
+        // Close section selection modal
+        function closeSectionModal() {
+            sectionModal.classList.remove('active');
+        }
+        
+        // Open social media selection modal
+        function openSocialModal() {
+            socialModal.classList.add('active');
+        }
+        
+        // Close social media selection modal
+        function closeSocialModal() {
+            socialModal.classList.remove('active');
+            socialOptions.forEach(opt => opt.classList.remove('active'));
+            socialUsername.value = '';
+            currentSocialPlatform = '';
+        }
+        
+        // Open lightbox
+        function openLightbox(index) {
+            currentGalleryIndex = index;
+            lightboxImage.src = galleryImages[index].src;
+            lightbox.classList.add('show');
+        }
+        
+        // Close lightbox
+        function closeLightbox() {
+            lightbox.classList.remove('show');
+        }
+        
+        // Show previous image in lightbox
+        function showPrevImage() {
+            currentGalleryIndex = (currentGalleryIndex - 1 + galleryImages.length) % galleryImages.length;
+            lightboxImage.src = galleryImages[currentGalleryIndex].src;
+        }
+        
+        // Show next image in lightbox
+        function showNextImage() {
+            currentGalleryIndex = (currentGalleryIndex + 1) % galleryImages.length;
+            lightboxImage.src = galleryImages[currentGalleryIndex].src;
+        }
+        
+        // Handle logo upload
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                compressImage(file, 300, function(compressedDataUrl) {
+                    businessLogo.src = compressedDataUrl;
+                    navLogo.src = compressedDataUrl;
+                    dynamicFavicon.href = compressedDataUrl;
+                    
+                    // Save to localStorage
+                    localStorage.setItem('businessLogo', compressedDataUrl);
+                    
+                    showToast('لوگو با موفقیت تغییر کرد');
+                });
+            }
+            event.target.value = '';
+        }
+
+        // Handle gallery upload
+        function handleGalleryUpload(event) {
+            const files = event.target.files;
+            if (files.length > 0) {
+                let processedCount = 0;
+                
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    compressImage(file, 300, function(compressedDataUrl) {
+                        addGalleryImage(compressedDataUrl);
+                        processedCount++;
+                        
+                        if (processedCount === files.length) {
+                            showToast(`${files.length} تصویر به گالری اضافه شد`);
+                        }
+                    });
+                }
+            }
+            event.target.value = '';
+        }
+        
+        // Add a new section
+        function addSection(type) {
+            const sectionId = 'section-' + Date.now();
+            let sectionHTML = '';
+            
+            switch(type) {
+                case 'about':
+                    sectionHTML = `
+                        <section class="section" id="${sectionId}" data-section="about">
+                            <div class="section-title">
+                                <div class="section-title-text" contenteditable="true">درباره ما</div>
+                                <div class="delete-section" onclick="deleteSection('${sectionId}')">حذف</div>
+                            </div>
+                            <div class="about-content">
+                                <div class="about-image" id="aboutImage-${sectionId}">
+                                    <i class="fas fa-image" style="font-size: 48px; opacity: 0.5;"></i>
+                                    <div class="image-upload-text">برای تغییر تصویر کلیک کنید</div>
+                                </div>
+                                <div class="about-text">
+                                    <p contenteditable="true">در این بخش می‌توانید اطلاعاتی درباره کسب‌وکار خود ارائه دهید. تاریخچه، ماموریت، چشم‌انداز و ارزش‌های شرکت خود را در اینجا شرح دهید.</p>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                    break;
+                    
+                case 'services':
+                    sectionHTML = `
+                        <section class="section" id="${sectionId}" data-section="services">
+                            <div class="section-title">
+                                <div class="section-title-text" contenteditable="true">خدمات ما</div>
+                                <div class="delete-section" onclick="deleteSection('${sectionId}')">حذف</div>
+                            </div>
+                            <div class="services-grid">
+                                <div class="service-card">
+                                    <h3 contenteditable="true">خدمات مشاوره</h3>
+                                    <p contenteditable="true">توضیح مختصری درباره این خدمت ارائه دهید.</p>
+                                </div>
+                                <div class="service-card">
+                                    <h3 contenteditable="true">طراحی و توسعه</h3>
+                                    <p contenteditable="true">توضیح مختصری درباره این خدمت ارائه دهید.</p>
+                                </div>
+                                <div class="service-card">
+                                    <h3 contenteditable="true">پشتیبانی</h3>
+                                    <p contenteditable="true">توضیح مختصری درباره این خدمت ارائه دهید.</p>
+                                </div>
+                                <div class="add-service-btn" onclick="addServiceCard('${sectionId}')">
+                                    <i class="fas fa-plus"></i>
+                                    <span>افزودن خدمت جدید</span>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                    break;
+                    
+                case 'testimonials':
+                    sectionHTML = `
+                        <section class="section" id="${sectionId}" data-section="testimonials">
+                            <div class="section-title">
+                                <div class="section-title-text" contenteditable="true">نظرات مشتریان</div>
+                                <div class="delete-section" onclick="deleteSection('${sectionId}')">حذف</div>
+                            </div>
+                            <div class="testimonials-grid">
+                                <div class="testimonial-card">
+                                    <p contenteditable="true">"این شرکت خدمات فوق‌العاده‌ای ارائه می‌دهد. من بسیار راضی هستم و به دیگران نیز توصیه می‌کنم."</p>
+                                    <div class="client" contenteditable="true">- محمد رضایی</div>
+                                </div>
+                                <div class="testimonial-card">
+                                    <p contentedtable="true">"پشتیبانی عالی و خدمات با کیفیت. حتماً همکاری خواهیم کرد."</p>
+                                    <div class="client" contenteditable="true">- فاطمه محمدی</div>
+                                </div>
+                                <div class="add-testimonial-btn" onclick="addTestimonialCard('${sectionId}')">
+                                    <i class="fas fa-plus"></i>
+                                    <span>افزودن نظر جدید</span>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                    break;
+                    
+                case 'gallery':
+                    sectionHTML = `
+                        <section class="section" id="${sectionId}" data-section="gallery">
+                            <div class="section-title">
+                                <div class="section-title-text" contenteditable="true">گالری تصاویر</div>
+                                <div class="delete-section" onclick="deleteSection('${sectionId}')">حذف</div>
+                            </div>
+                            <div class="gallery-grid">
+                                <div class="add-gallery-item" onclick="document.getElementById('galleryUpload').click()">
+                                    <i class="fas fa-plus"></i>
+                                    <span>افزودن تصویر</span>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                    break;
+                    
+                case 'social':
+                    sectionHTML = `
+                        <section class="section" id="${sectionId}" data-section="social">
+                            <div class="section-title">
+                                <div class="section-title-text" contenteditable="true">شبکه‌های اجتماعی</div>
+                                <div class="delete-section" onclick="deleteSection('${sectionId}')">حذف</div>
+                            </div>
+                            <div class="social-grid">
+                                <div class="add-social-btn" onclick="openSocialModal()">
+                                    <i class="fas fa-plus"></i>
+                                    <span>افزودن شبکه اجتماعی</span>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                    break;
+                    
+                case 'banking':
+                    sectionHTML = `
+                        <section class="section" id="${sectionId}" data-section="banking">
+                            <div class="section-title">
+                                <div class="section-title-text" contenteditable="true">اطلاعات بانکی</div>
+                                <div class="delete-section" onclick="deleteSection('${sectionId}')">حذف</div>
+                            </div>
+                            <div class="banking-grid">
+                                <div class="banking-card">
+                                    <div class="bank-icon">
+                                        <i class="fas fa-university"></i>
+                                    </div>
+                                    <div class="bank-info">
+                                        <div contenteditable="true">بانک ملی</div>
+                                        <div class="bank-number" contenteditable="true" onclick="copyToClipboard(this)">6037-9910-1234-5678</div>
+                                    </div>
+                                    <div class="bank-delete" onclick="deleteBankCard(this)">
+                                        <i class="fas fa-times"></i>
+                                    </div>
+                                </div>
+                                <div class="add-banking-btn" onclick="addBankCard('${sectionId}')">
+                                    <i class="fas fa-plus"></i>
+                                    <span>افزودن حساب بانکی</span>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                    break;
+                    
+                case 'contact':
+                    sectionHTML = `
+                        <section class="section" id="${sectionId}" data-section="contact">
+                            <div class="section-title">
+                                <div class="section-title-text" contenteditable="true">تماس با ما</div>
+                                <div class="delete-section" onclick="deleteSection('${sectionId}')">حذف</div>
+                            </div>
+                            <div class="contact-map-section">
+                                <div class="contact-grid">
+                                    <div class="contact-item">
+                                        <div class="contact-icon">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                        </div>
+                                        <div class="contact-info">
+                                            <h3 contenteditable="true">آدرس</h3>
+                                            <p contenteditable="true">تهران، خیابان ولیعصر، کوچه فلان، پلاک ۱۲۳</p>
+                                        </div>
+                                    </div>
+                                    <div class="contact-item">
+                                        <div class="contact-icon">
+                                            <i class="fas fa-phone"></i>
+                                        </div>
+                                        <div class="contact-info">
+                                            <h3 contenteditable="true">تلفن</h3>
+                                            <p contenteditable="true">۰۲۱-۱۲۳۴۵۶۷۸</p>
+                                        </div>
+                                    </div>
+                                    <div class="contact-item">
+                                        <div class="contact-icon">
+                                            <i class="fas fa-envelope"></i>
+                                        </div>
+                                        <div class="contact-info">
+                                            <h3 contenteditable="true">ایمیل</h3>
+                                            <p contenteditable="true">info@example.com</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="map-container">
+                                    <div class="map-instructions">برای تغییر موقعیت روی نقشه کلیک کنید</div>
+                                    <div id="map-${sectionId}" style="height: 400px;"></div>
+                                    <div class="map-controls">
+                                        <input type="text" id="mapSearch-${sectionId}" placeholder="جستجوی آدرس...">
+                                        <button onclick="searchAddress('${sectionId}')">جستجو</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                    break;
+            }
+            
+            // Add section to the page
+            mainContainer.insertAdjacentHTML('beforeend', sectionHTML);
+            
+            // Add about image event listener
+            if (type === 'about') {
+                const aboutImage = document.getElementById(`aboutImage-${sectionId}`);
+                aboutImage.addEventListener('click', function() {
+                    aboutImageUpload.click();
+                });
+            }
+            
+            // Add section to sections array
+            sections.push({
+                id: sectionId,
+                type: type,
+                title: '',
+                content: ''
+            });
+            
+            // Update navigation
+            updateNavigation();
+            
+            showToast('بخش جدید با موفقیت اضافه شد');
+        }
+        
+        // Delete a section
+        function deleteSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.remove();
+                
+                // Remove from sections array
+                sections = sections.filter(section => section.id !== sectionId);
+                
+                // Update navigation
+                updateNavigation();
+                
+                showToast('بخش با موفقیت حذف شد');
+            }
+        }
+        
+        // Add a service card
+        function addServiceCard(sectionId) {
+            const servicesGrid = document.querySelector(`#${sectionId} .services-grid`);
+            const addButton = servicesGrid.querySelector('.add-service-btn');
+            
+            const serviceCard = document.createElement('div');
+            serviceCard.className = 'service-card';
+            serviceCard.innerHTML = `
+                <h3 contenteditable="true">خدمت جدید</h3>
+                <p contenteditable="true">توضیح مختصری درباره این خدمت ارائه دهید.</p>
+            `;
+            
+            servicesGrid.insertBefore(serviceCard, addButton);
+            showToast('خدمت جدید با موفقیت اضافه شد');
+        }
+        
+        // Add a testimonial card
+        function addTestimonialCard(sectionId) {
+            const testimonialsGrid = document.querySelector(`#${sectionId} .testimonials-grid`);
+            const addButton = testimonialsGrid.querySelector('.add-testimonial-btn');
+            
+            const testimonialCard = document.createElement('div');
+            testimonialCard.className = 'testimonial-card';
+            testimonialCard.innerHTML = `
+                <p contenteditable="true">"نظر جدید مشتری"</p>
+                <div class="client" contenteditable="true">- نام مشتری</div>
+            `;
+            
+            testimonialsGrid.insertBefore(testimonialCard, addButton);
+            showToast('نظر جدید با موفقیت اضافه شد');
+        }
+        
+        // Add social media
+        function addSocialMedia() {
+            if (!currentSocialPlatform || !socialUsername.value) {
+                showToast('لطفاً یک پلتفرم و نام کاربری وارد کنید');
+                return;
+            }
+            
+            const socialSections = document.querySelectorAll('[data-section="social"]');
+            if (socialSections.length === 0) {
+                showToast('لطفاً ابتدا بخش شبکه‌های اجتماعی را اضافه کنید');
+                return;
+            }
+            
+            const socialGrid = socialSections[0].querySelector('.social-grid');
+            const addButton = socialGrid.querySelector('.add-social-btn');
+            
+            const socialCard = document.createElement('div');
+            socialCard.className = 'social-card';
+            socialCard.innerHTML = `
+                <div class="social-icon">
+                    <i class="fab fa-${currentSocialPlatform}"></i>
+                </div>
+                <div>
+                    <div contenteditable="true">${getSocialPlatformName(currentSocialPlatform)}</div>
+                    <div class="social-username">${socialUsername.value}</div>
+                </div>
+                <div class="social-delete" onclick="deleteSocialCard(this)">
+                    <i class="fas fa-times"></i>
+                </div>
+            `;
+            
+            socialGrid.insertBefore(socialCard, addButton);
+            closeSocialModal();
+            showToast('شبکه اجتماعی با موفقیت اضافه شد');
+        }
+        
+        // Get social platform name in Persian
+        function getSocialPlatformName(platform) {
+            const names = {
+                'instagram': 'اینستاگرام',
+                'telegram': 'تلگرام',
+                'whatsapp': 'واتساپ',
+                'twitter': 'توییتر',
+                'linkedin': 'لینکدین',
+                'youtube': 'یوتیوب'
+            };
+            
+            return names[platform] || platform;
+        }
+        
+        // Delete social media card
+        function deleteSocialCard(element) {
+            element.parentElement.remove();
+            showToast('شبکه اجتماعی با موفقیت حذف شد');
+        }
+        
+        // Add bank card
+        function addBankCard(sectionId) {
+            const bankingGrid = document.querySelector(`#${sectionId} .banking-grid`);
+            const addButton = bankingGrid.querySelector('.add-banking-btn');
+            
+            const bankingCard = document.createElement('div');
+            bankingCard.className = 'banking-card';
+            bankingCard.innerHTML = `
+                <div class="bank-icon">
+                    <i class="fas fa-university"></i>
+                </div>
+                <div class="bank-info">
+                    <div contenteditable="true">نام بانک</div>
+                    <div class="bank-number" contenteditable="true" onclick="copyToClipboard(this)">شماره حساب یا کارت</div>
+                </div>
+                <div class="bank-delete" onclick="deleteBankCard(this)">
+                    <i class="fas fa-times"></i>
+                </div>
+            `;
+            
+            bankingGrid.insertBefore(bankingCard, addButton);
+            showToast('حساب بانکی با موفقیت اضافه شد');
+        }
+        
+        // Delete bank card
+        function deleteBankCard(element) {
+            element.parentElement.remove();
+            showToast('حساب بانکی با موفقیت حذف شد');
+        }
+        
+        // Copy to clipboard
+        function copyToClipboard(element) {
+            const text = element.innerText;
+            navigator.clipboard.writeText(text).then(function() {
+                // Show temporary feedback
+                const originalText = element.innerText;
+                element.innerText = 'کپی شد!';
+                setTimeout(() => {
+                    element.innerText = originalText;
+                }, 2000);
+                showToast('متن با موفقیت کپی شد');
+            });
+        }
+        
+        // Update navigation menu
+        function updateNavigation() {
+            // Clear existing navigation items
+            navContainer.innerHTML = '';
+            
+            // Add hero section to navigation
+            const heroNavItem = document.createElement('div');
+            heroNavItem.className = 'nav-item active';
+            heroNavItem.textContent = 'صفحه اصلی';
+            heroNavItem.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Highlight the section
+                highlightSection('section-hero');
+                
+                document.getElementById('section-hero').scrollIntoView({ behavior: 'smooth' });
+            });
+            navContainer.appendChild(heroNavItem);
+            
+            // Add other sections to navigation
+            document.querySelectorAll('.section').forEach(section => {
+                const sectionId = section.id;
+                const sectionTitle = section.querySelector('.section-title-text').textContent || 'بخش جدید';
+                
+                const navItem = document.createElement('div');
+                navItem.className = 'nav-item';
+                navItem.textContent = sectionTitle;
+                navItem.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Highlight the section
+                    highlightSection(sectionId);
+                    
+                    section.scrollIntoView({ behavior: 'smooth' });
+                });
+                
+                navContainer.appendChild(navItem);
+            });
+        }
+        
+        // Highlight a section for 3 seconds
+        function highlightSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.add('highlighted');
+                
+                setTimeout(() => {
+                    section.classList.remove('highlighted');
+                }, 3000);
+            }
+        }
+        
+        // Initialize drag and drop with Sortable
+        function initSortable() {
+            // This is a simplified version - in a real implementation, you would use a library like SortableJS
+            // For this example, we'll just add a basic drag and drop indicator
+            const sections = document.querySelectorAll('.section, .hero-section');
+            
+            sections.forEach(section => {
+                section.setAttribute('draggable', 'true');
+                
+                section.addEventListener('dragstart', function(e) {
+                    this.classList.add('dragging');
+                    e.dataTransfer.setData('text/plain', this.id);
+                });
+                
+                section.addEventListener('dragend', function() {
+                    this.classList.remove('dragging');
+                });
+            });
+            
+            mainContainer.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                const afterElement = getDragAfterElement(mainContainer, e.clientY);
+                const draggable = document.querySelector('.dragging');
+                
+                if (afterElement == null) {
+                    mainContainer.appendChild(draggable);
+                } else {
+                    mainContainer.insertBefore(draggable, afterElement);
+                }
+                
+                // Update navigation after reordering
+                updateNavigation();
+            });
+        }
+        
+        // Helper function for drag and drop
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.section, .hero-section:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+        
+        // Apply theme changes
+        function applyTheme() {
+            const primaryColor = document.getElementById('primaryColor').value;
+            const secondaryColor = document.getElementById('secondaryColor').value;
+            const buttonColor = document.getElementById('buttonColor').value;
+            
+            document.documentElement.style.setProperty('--primary-color', primaryColor);
+            document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+            document.documentElement.style.setProperty('--button-color', buttonColor);
+            
+            // Save to localStorage
+            localStorage.setItem('primaryColor', primaryColor);
+            localStorage.setItem('secondaryColor', secondaryColor);
+            localStorage.setItem('buttonColor', buttonColor);
+            
+            showToast('تنظیمات ظاهری با موفقیت اعمال شد');
+        }
+        
+        // Apply background image
+        function applyBackgroundImage() {
+            const fileInput = document.getElementById('bgImageUpload');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('heroBg').src = e.target.result;
+                    
+                    // Save to localStorage
+                    localStorage.setItem('backgroundImage', e.target.result);
+                    
+                    showToast('تصویر پس‌زمینه با موفقیت اعمال شد');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                showToast('لطفاً یک تصویر انتخاب کنید');
+            }
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            const data = {
+                businessName: document.getElementById('businessName').textContent,
+                businessTagline: document.getElementById('businessTagline').textContent,
+                businessLogo: businessLogo.src,
+                primaryColor: document.getElementById('primaryColor').value,
+                secondaryColor: document.getElementById('secondaryColor').value,
+                buttonColor: document.getElementById('buttonColor').value,
+                backgroundImage: document.getElementById('heroBg').src,
+                textAlign: getComputedStyle(document.documentElement).getPropertyValue('--text-align').trim(),
+                sections: []
+            };
+            
+            // Save section data
+            document.querySelectorAll('.section').forEach(section => {
+                const sectionData = {
+                    id: section.id,
+                    type: section.getAttribute('data-section'),
+                    title: section.querySelector('.section-title-text').textContent,
+                    content: section.innerHTML
+                };
+                
+                data.sections.push(sectionData);
+            });
+            
+            // Create a download link
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "landing-page-data.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            document.body.removeChild(downloadAnchor);
+            
+            // Also save to localStorage
+            localStorage.setItem('landingPageData', JSON.stringify(data));
+            
+            showToast('تنظیمات با موفقیت ذخیره شد');
+        }
+        
+        // Save page as HTML
+        function saveHTML() {
+            // Create a clone of the document
+            const htmlContent = document.documentElement.outerHTML;
+            
+            // Create a temporary DOM parser to remove CMS elements
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, 'text/html');
+            
+            // Remove CMS controls and related elements
+            const elementsToRemove = [
+                '.cms-toggle',
+                '.cms-controls',
+                '.add-section-main',
+                '.section-modal',
+                '.social-modal',
+                '.toast'
+            ];
+            
+            elementsToRemove.forEach(selector => {
+                const elements = doc.querySelectorAll(selector);
+                elements.forEach(el => el.remove());
+            });
+            
+            // Remove contenteditable attributes
+            const editableElements = doc.querySelectorAll('[contenteditable="true"]');
+            editableElements.forEach(el => {
+                el.removeAttribute('contenteditable');
+            });
+            
+            // Remove delete buttons
+            const deleteButtons = doc.querySelectorAll('.delete-section, .social-delete, .gallery-delete, .bank-delete');
+            deleteButtons.forEach(btn => btn.remove());
+            
+            // Remove add buttons
+            const addButtons = doc.querySelectorAll('.add-service-btn, .add-testimonial-btn, .add-social-btn, .add-gallery-item, .add-banking-btn');
+            addButtons.forEach(btn => btn.remove());
+            
+            // Remove upload text
+            const uploadTexts = doc.querySelectorAll('.logo-upload-text, .image-upload-text');
+            uploadTexts.forEach(text => text.remove());
+            
+            // Remove map controls
+            const mapControls = doc.querySelectorAll('.map-controls');
+            mapControls.forEach(control => control.remove());
+            
+            // Remove map instructions
+            const mapInstructions = doc.querySelectorAll('.map-instructions');
+            mapInstructions.forEach(instruction => instruction.remove());
+            
+            // Fix CSS to remove right margin when CMS panel is removed
+            const mainContainer = doc.querySelector('.main-container');
+            if (mainContainer) {
+                mainContainer.style.marginRight = '0';
+                mainContainer.classList.remove('cms-open');
+            }
+            
+            // Serialize the modified document back to a string
+            const cleanHTML = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+            
+            // Create a Blob and download the file
+            const blob = new Blob([cleanHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'landing-page.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('صفحه با موفقیت به صورت HTML ذخیره شد');
+        }
+        
+        // Import data from file
+        function importData() {
+            const fileInput = document.getElementById('loadData');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        loadData(data);
+                        showToast('تنظیمات با موفقیت بارگذاری شد');
+                    } catch (error) {
+                        showToast('خطا در بارگذاری فایل');
+                    }
+                };
+                reader.readAsText(file);
+            } else {
+                showToast('لطفاً یک فایل انتخاب کنید');
+            }
+        }
+        
+        // Load saved data
+        function loadSavedData() {
+            const savedData = localStorage.getItem('landingPageData');
+            
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                loadData(data);
+            }
+        }
+        
+        // Load data into the page
+        function loadData(data) {
+            // Load basic info
+            if (data.businessName) {
+                document.getElementById('businessName').textContent = data.businessName;
+            }
+            
+            if (data.businessTagline) {
+                document.getElementById('businessTagline').textContent = data.businessTagline;
+            }
+            
+            if (data.businessLogo) {
+                businessLogo.src = data.businessLogo;
+                navLogo.src = data.businessLogo;
+                dynamicFavicon.href = data.businessLogo;
+            }
+            
+            if (data.primaryColor) {
+                document.getElementById('primaryColor').value = data.primaryColor;
+                document.getElementById('primaryColorText').value = data.primaryColor;
+                document.documentElement.style.setProperty('--primary-color', data.primaryColor);
+            }
+            
+            if (data.secondaryColor) {
+                document.getElementById('secondaryColor').value = data.secondaryColor;
+                document.getElementById('secondaryColorText').value = data.secondaryColor;
+                document.documentElement.style.setProperty('--secondary-color', data.secondaryColor);
+            }
+            
+            if (data.buttonColor) {
+                document.getElementById('buttonColor').value = data.buttonColor;
+                document.getElementById('buttonColorText').value = data.buttonColor;
+                document.documentElement.style.setProperty('--button-color', data.buttonColor);
+            }
+            
+            if (data.backgroundImage) {
+                document.getElementById('heroBg').src = data.backgroundImage;
+            }
+            
+            if (data.textAlign) {
+                document.documentElement.style.setProperty('--text-align', data.textAlign);
+                document.querySelectorAll('.alignment-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-align') === data.textAlign) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                // Update navigation layout
+                updateNavLayout(data.textAlign);
+            }
+            
+            // Load sections
+            if (data.sections && data.sections.length > 0) {
+                // Remove existing sections (except hero)
+                document.querySelectorAll('.section').forEach(section => section.remove());
+                
+                // Add saved sections
+                data.sections.forEach(sectionData => {
+                    const sectionHTML = `
+                        <section class="section" id="${sectionData.id}" data-section="${sectionData.type}">
+                            ${sectionData.content}
+                        </section>
+                    `;
+                    
+                    mainContainer.insertAdjacentHTML('beforeend', sectionHTML);
+                });
+                
+                // Update sections array
+                sections = data.sections;
+            }
+            
+            // Update navigation
+            updateNavigation();
+        }
+        
+        // Image compression function
+        function compressImage(file, maxSizeKB, callback) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Calculate new dimensions while maintaining aspect ratio
+                    let width = img.width;
+                    let height = img.height;
+                    const maxDimension = 1200; // Maximum dimension for compression
+                    
+                    if (width > height && width > maxDimension) {
+                        height = Math.round((height * maxDimension) / width);
+                        width = maxDimension;
+                    } else if (height > maxDimension) {
+                        width = Math.round((width * maxDimension) / height);
+                        height = maxDimension;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    // Draw image on canvas
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Get compressed data URL
+                    let quality = 0.9;
+                    let compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    
+                    // Check if the compressed image is under the size limit
+                    const sizeKB = Math.round((compressedDataUrl.length * 3) / 4 / 1024);
+                    
+                    // If still too large, reduce quality further
+                    if (sizeKB > maxSizeKB) {
+                        quality = maxSizeKB / sizeKB * 0.9;
+                        compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    }
+                    
+                    callback(compressedDataUrl);
+                };
+            };
+        }
+        
+        // Add image to gallery
+        function addGalleryImage(imageSrc) {
+            const gallerySections = document.querySelectorAll('[data-section="gallery"]');
+            if (gallerySections.length === 0) return;
+            
+            const galleryGrid = gallerySections[0].querySelector('.gallery-grid');
+            const addButton = galleryGrid.querySelector('.add-gallery-item');
+            
+            const galleryItem = document.createElement('div');
+            galleryItem.className = 'gallery-item';
+            galleryItem.innerHTML = `
+                <img src="${imageSrc}" alt="تصویر گالری">
+                <div class="gallery-delete" onclick="deleteGalleryImage(this)">
+                    <i class="fas fa-times"></i>
+                </div>
+            `;
+            
+            // Add click event to open lightbox
+            galleryItem.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('gallery-delete') && !e.target.closest('.gallery-delete')) {
+                    const index = galleryImages.findIndex(img => img.src === imageSrc);
+                    if (index !== -1) {
+                        openLightbox(index);
+                    }
+                }
+            });
+            
+            galleryGrid.insertBefore(galleryItem, addButton);
+            
+            // Add to gallery images array
+            galleryImages.push({ src: imageSrc, element: galleryItem });
+        }
+        
+        // Delete gallery image
+        function deleteGalleryImage(element) {
+            const galleryItem = element.closest('.gallery-item');
+            const imgSrc = galleryItem.querySelector('img').src;
+            
+            // Remove from array
+            galleryImages = galleryImages.filter(img => img.src !== imgSrc);
+            
+            // Remove from DOM
+            galleryItem.remove();
+            
+            showToast('تصویر از گالری حذف شد');
+        }
+        
+        // Show toast notification
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Search address on map
+        function searchAddress(sectionId) {
+            const searchInput = document.getElementById(`mapSearch-${sectionId}`);
+            const query = searchInput.value;
+            
+            if (!query) return;
+            
+            showToast('جستجوی آدرس: ' + query);
+            // Note: For full functionality, you'd need to implement the map search
+        }
     </script>
 </body>
 </html>
