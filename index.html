@@ -235,8 +235,7 @@
         let currentSocialPlatform = '';
         let galleryImages = [];
         let currentGalleryIndex = 0;
-        let map = null;
-        let mapMarker = null;
+        let maps = new Map(); // برای ذخیره نقشه‌ها
         
         // DOM elements
         const cmsToggle = document.getElementById('cmsToggle');
@@ -634,91 +633,90 @@
                     `;
                     break;
                     
-               // در تابع addSection، بخش contact رو با این کد جایگزین کن:
-case 'contact':
-    sectionHTML = `
-        <section class="section" id="${sectionId}" data-section="contact">
-            <div class="section-title">
-                <div class="section-title-text" contenteditable="true">تماس با ما</div>
-                <div class="delete-section" data-section-id="${sectionId}">حذف</div>
-            </div>
-            <div class="contact-map-section">
-                <div class="contact-grid">
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </div>
-                        <div class="contact-info">
-                            <h3 contenteditable="true">آدرس</h3>
-                            <p contenteditable="true">تهران، خیابان ولیعصر، کوچه فلان، پلاک ۱۲۳</p>
-                        </div>
-                    </div>
-                    
-                    <!-- تلفن‌ها -->
-                    <div class="contact-items-group">
-                        <div class="contact-group-header">
-                            <h3>تلفن‌های تماس</h3>
-                            <button class="add-contact-item-btn" data-type="phone">
-                                <i class="fas fa-plus"></i> افزودن تلفن
-                            </button>
-                        </div>
-                        <div class="contact-items-list" data-type="phone">
-                            <div class="contact-item">
-                                <div class="contact-icon">
-                                    <i class="fas fa-phone"></i>
+                case 'contact':
+                    sectionHTML = `
+                        <section class="section" id="${sectionId}" data-section="contact">
+                            <div class="section-title">
+                                <div class="section-title-text" contenteditable="true">تماس با ما</div>
+                                <div class="delete-section" data-section-id="${sectionId}">حذف</div>
+                            </div>
+                            <div class="contact-map-section">
+                                <div class="contact-grid">
+                                    <div class="contact-item">
+                                        <div class="contact-icon">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                        </div>
+                                        <div class="contact-info">
+                                            <h3 contenteditable="true">آدرس</h3>
+                                            <p contenteditable="true">تهران، خیابان ولیعصر، کوچه فلان، پلاک ۱۲۳</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- تلفن‌ها -->
+                                    <div class="contact-items-group">
+                                        <div class="contact-group-header">
+                                            <h3>تلفن‌های تماس</h3>
+                                            <button class="add-contact-item-btn" data-type="phone">
+                                                <i class="fas fa-plus"></i> افزودن تلفن
+                                            </button>
+                                        </div>
+                                        <div class="contact-items-list" data-type="phone">
+                                            <div class="contact-item">
+                                                <div class="contact-icon">
+                                                    <i class="fas fa-phone"></i>
+                                                </div>
+                                                <div class="contact-info">
+                                                    <div contenteditable="true" class="contact-label">تلفن اصلی</div>
+                                                    <p contenteditable="true">۰۲۱-۱۲۳۴۵۶۷۸</p>
+                                                </div>
+                                                <div class="contact-item-delete">
+                                                    <i class="fas fa-times"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- ایمیل‌ها -->
+                                    <div class="contact-items-group">
+                                        <div class="contact-group-header">
+                                            <h3>آدرس‌های ایمیل</h3>
+                                            <button class="add-contact-item-btn" data-type="email">
+                                                <i class="fas fa-plus"></i> افزودن ایمیل
+                                            </button>
+                                        </div>
+                                        <div class="contact-items-list" data-type="email">
+                                            <div class="contact-item">
+                                                <div class="contact-icon">
+                                                    <i class="fas fa-envelope"></i>
+                                                </div>
+                                                <div class="contact-info">
+                                                    <div contenteditable="true" class="contact-label">ایمیل اصلی</div>
+                                                    <p contenteditable="true">info@example.com</p>
+                                                </div>
+                                                <div class="contact-item-delete">
+                                                    <i class="fas fa-times"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="contact-info">
-                                    <div contenteditable="true" class="contact-label">تلفن اصلی</div>
-                                    <p contenteditable="true">۰۲۱-۱۲۳۴۵۶۷۸</p>
-                                </div>
-                                <div class="contact-item-delete">
-                                    <i class="fas fa-times"></i>
+                                
+                                <div class="map-container">
+                                    <div class="map-instructions">
+                                        <i class="fas fa-info-circle"></i>
+                                        برای تغییر موقعیت روی نقشه کلیک کنید
+                                    </div>
+                                    <div id="map-${sectionId}" class="real-map"></div>
+                                    <div class="map-controls">
+                                        <input type="text" id="mapSearch-${sectionId}" placeholder="جستجوی آدرس (مثال: تهران، میدان آزادی)">
+                                        <button class="search-map-btn" data-section-id="${sectionId}">جستجو</button>
+                                        <button class="reset-map-btn" data-section-id="${sectionId}">موقعیت پیش‌فرض</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <!-- ایمیل‌ها -->
-                    <div class="contact-items-group">
-                        <div class="contact-group-header">
-                            <h3>آدرس‌های ایمیل</h3>
-                            <button class="add-contact-item-btn" data-type="email">
-                                <i class="fas fa-plus"></i> افزودن ایمیل
-                            </button>
-                        </div>
-                        <div class="contact-items-list" data-type="email">
-                            <div class="contact-item">
-                                <div class="contact-icon">
-                                    <i class="fas fa-envelope"></i>
-                                </div>
-                                <div class="contact-info">
-                                    <div contenteditable="true" class="contact-label">ایمیل اصلی</div>
-                                    <p contenteditable="true">info@example.com</p>
-                                </div>
-                                <div class="contact-item-delete">
-                                    <i class="fas fa-times"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="map-container">
-                    <div class="map-instructions">
-                        <i class="fas fa-info-circle"></i>
-                        برای تغییر موقعیت روی نقشه کلیک کنید
-                    </div>
-                    <div id="map-${sectionId}" class="real-map"></div>
-                    <div class="map-controls">
-                        <input type="text" id="mapSearch-${sectionId}" placeholder="جستجوی آدرس (مثال: تهران، میدان آزادی)">
-                        <button data-section-id="${sectionId}">جستجو</button>
-                        <button class="reset-map-btn" data-section-id="${sectionId}">موقعیت پیش‌فرض</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-    `;
-    break;
+                        </section>
+                    `;
+                    break;
             }
             
             // Add section to the page
@@ -800,12 +798,52 @@ case 'contact':
                     });
                 }
                 
-                // Map search button
-                const mapSearchBtn = newSection.querySelector('.map-controls button');
-                if (mapSearchBtn) {
-                    mapSearchBtn.addEventListener('click', function() {
-                        searchAddress(sectionId);
+                // Contact section specific event listeners
+                if (type === 'contact') {
+                    // Add phone button
+                    const addPhoneBtn = newSection.querySelector('.add-contact-item-btn[data-type="phone"]');
+                    if (addPhoneBtn) {
+                        addPhoneBtn.addEventListener('click', function() {
+                            addContactItem(sectionId, 'phone');
+                        });
+                    }
+                    
+                    // Add email button
+                    const addEmailBtn = newSection.querySelector('.add-contact-item-btn[data-type="email"]');
+                    if (addEmailBtn) {
+                        addEmailBtn.addEventListener('click', function() {
+                            addContactItem(sectionId, 'email');
+                        });
+                    }
+                    
+                    // Contact item delete buttons
+                    const contactDeleteBtns = newSection.querySelectorAll('.contact-item-delete');
+                    contactDeleteBtns.forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            deleteContactItem(this);
+                        });
                     });
+                    
+                    // Initialize map
+                    setTimeout(() => {
+                        initMap(sectionId);
+                    }, 500);
+                    
+                    // Map search button
+                    const mapSearchBtn = newSection.querySelector('.search-map-btn');
+                    if (mapSearchBtn) {
+                        mapSearchBtn.addEventListener('click', function() {
+                            searchAddress(sectionId);
+                        });
+                    }
+                    
+                    // Map reset button
+                    const resetMapBtn = newSection.querySelector('.reset-map-btn');
+                    if (resetMapBtn) {
+                        resetMapBtn.addEventListener('click', function() {
+                            resetMap(sectionId);
+                        });
+                    }
                 }
             }, 100);
             
@@ -842,6 +880,13 @@ case 'contact':
         function deleteSection(sectionId) {
             const section = document.getElementById(sectionId);
             if (section) {
+                // Remove map if exists
+                if (maps.has(sectionId)) {
+                    const map = maps.get(sectionId);
+                    map.remove();
+                    maps.delete(sectionId);
+                }
+                
                 section.remove();
                 
                 // Remove from sections array
@@ -1005,6 +1050,144 @@ case 'contact':
             }).catch(function() {
                 showToast('خطا در کپی کردن متن');
             });
+        }
+
+        // Add contact item (phone or email)
+        function addContactItem(sectionId, type) {
+            const contactList = document.querySelector(`#${sectionId} .contact-items-list[data-type="${type}"]`);
+            if (!contactList) return;
+            
+            const iconClass = type === 'phone' ? 'fa-phone' : 'fa-envelope';
+            const label = type === 'phone' ? 'تلفن جدید' : 'ایمیل جدید';
+            const placeholder = type === 'phone' ? 'شماره تلفن' : 'آدرس ایمیل';
+            
+            const contactItem = document.createElement('div');
+            contactItem.className = 'contact-item';
+            contactItem.innerHTML = `
+                <div class="contact-icon">
+                    <i class="fas ${iconClass}"></i>
+                </div>
+                <div class="contact-info">
+                    <div contenteditable="true" class="contact-label">${label}</div>
+                    <p contenteditable="true">${placeholder}</p>
+                </div>
+                <div class="contact-item-delete">
+                    <i class="fas fa-times"></i>
+                </div>
+            `;
+            
+            contactList.appendChild(contactItem);
+            
+            // Add event listener to delete button
+            const deleteBtn = contactItem.querySelector('.contact-item-delete');
+            deleteBtn.addEventListener('click', function() {
+                deleteContactItem(this);
+            });
+            
+            showToast(`${type === 'phone' ? 'تلفن' : 'ایمیل'} جدید اضافه شد`);
+        }
+
+        // Delete contact item
+        function deleteContactItem(element) {
+            element.parentElement.remove();
+            showToast('آیتم تماس حذف شد');
+        }
+
+        // Initialize map
+        function initMap(sectionId) {
+            const mapElement = document.getElementById(`map-${sectionId}`);
+            if (!mapElement) return;
+            
+            // موقعیت پیش‌فرض (تهران)
+            const defaultPosition = [35.6892, 51.3890];
+            
+            // ایجاد نقشه
+            const map = L.map(`map-${sectionId}`).setView(defaultPosition, 13);
+            
+            // اضافه کردن لایه نقشه
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 18
+            }).addTo(map);
+            
+            // ایجاد مارکر
+            const marker = L.marker(defaultPosition, {
+                draggable: true
+            }).addTo(map);
+            
+            marker.bindPopup('موقعیت کسب‌وکار شما<br>برای جابجایی، مارکر را بکشید').openPopup();
+            
+            // ذخیره نقشه و مارکر
+            maps.set(sectionId, {
+                map: map,
+                marker: marker,
+                defaultPosition: defaultPosition
+            });
+            
+            // event برای تغییر موقعیت با کلیک روی نقشه
+            map.on('click', function(e) {
+                marker.setLatLng(e.latlng);
+                marker.bindPopup('موقعیت جدید: ' + e.latlng.lat.toFixed(4) + ', ' + e.latlng.lng.toFixed(4)).openPopup();
+                showToast('موقعیت نقشه به‌روز شد');
+            });
+            
+            // event برای وقتی مارکر کشیده می‌شه
+            marker.on('dragend', function(e) {
+                const position = marker.getLatLng();
+                marker.bindPopup('موقعیت جدید: ' + position.lat.toFixed(4) + ', ' + position.lng.toFixed(4)).openPopup();
+                showToast('موقعیت نقشه به‌روز شد');
+            });
+            
+            return map;
+        }
+
+        // Search address on map
+        function searchAddress(sectionId) {
+            const searchInput = document.getElementById(`mapSearch-${sectionId}`);
+            const query = searchInput.value.trim();
+            
+            if (!query) {
+                showToast('لطفاً آدرسی برای جستجو وارد کنید');
+                return;
+            }
+            
+            showToast('در حال جستجوی آدرس...');
+            
+            // استفاده از Nominatim API برای جستجوی آدرس
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&accept-language=fa`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const result = data[0];
+                        const lat = parseFloat(result.lat);
+                        const lon = parseFloat(result.lon);
+                        
+                        const mapData = maps.get(sectionId);
+                        if (mapData) {
+                            mapData.map.setView([lat, lon], 16);
+                            mapData.marker.setLatLng([lat, lon]);
+                            mapData.marker.bindPopup(result.display_name).openPopup();
+                            showToast('آدرس پیدا شد و نقشه به‌روز شد');
+                        }
+                    } else {
+                        showToast('آدرس یافت نشد');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error searching address:', error);
+                    showToast('خطا در جستجوی آدرس');
+                });
+        }
+
+        // Reset map to default position
+        function resetMap(sectionId) {
+            const mapData = maps.get(sectionId);
+            if (mapData) {
+                mapData.map.setView(mapData.defaultPosition, 13);
+                mapData.marker.setLatLng(mapData.defaultPosition);
+                mapData.marker.bindPopup('موقعیت پیش‌فرض').openPopup();
+                showToast('نقشه به موقعیت پیش‌فرض بازگشت');
+            }
         }
         
         // Update navigation menu
@@ -1223,11 +1406,11 @@ case 'contact':
             });
             
             // Remove delete buttons
-            const deleteButtons = doc.querySelectorAll('.delete-section, .social-delete, .gallery-delete, .bank-delete');
+            const deleteButtons = doc.querySelectorAll('.delete-section, .social-delete, .gallery-delete, .bank-delete, .contact-item-delete');
             deleteButtons.forEach(btn => btn.remove());
             
             // Remove add buttons
-            const addButtons = doc.querySelectorAll('.add-service-btn, .add-testimonial-btn, .add-social-btn, .add-gallery-item, .add-banking-btn');
+            const addButtons = doc.querySelectorAll('.add-service-btn, .add-testimonial-btn, .add-social-btn, .add-gallery-item, .add-banking-btn, .add-contact-item-btn');
             addButtons.forEach(btn => btn.remove());
             
             // Remove upload text
@@ -1364,6 +1547,13 @@ case 'contact':
                     `;
                     
                     mainContainer.insertAdjacentHTML('beforeend', sectionHTML);
+                    
+                    // Initialize map for contact sections
+                    if (sectionData.type === 'contact') {
+                        setTimeout(() => {
+                            initMap(sectionData.id);
+                        }, 500);
+                    }
                 });
                 
                 // Update sections array
@@ -1487,18 +1677,6 @@ case 'contact':
                 toast.classList.remove('show');
             }, 3000);
         }
-
-        // Search address on map
-        function searchAddress(sectionId) {
-            const searchInput = document.getElementById(`mapSearch-${sectionId}`);
-            const query = searchInput.value;
-            
-            if (!query) return;
-            
-            showToast('جستجوی آدرس: ' + query);
-            // Note: For full functionality, you'd need to implement the map search
-        }
     </script>
 </body>
 </html>
-
