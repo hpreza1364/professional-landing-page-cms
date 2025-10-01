@@ -800,53 +800,52 @@ case 'contact':
                     });
                 }
                 
-                // Contact section specific event listeners
-                if (type === 'contact') {
-                    // Add phone button
-                    const addPhoneBtn = newSection.querySelector('.add-contact-item-btn[data-type="phone"]');
-                    if (addPhoneBtn) {
-                        addPhoneBtn.addEventListener('click', function() {
-                            addContactItem(sectionId, 'phone');
-                        });
-                    }
-                    
-                    // Add email button
-                    const addEmailBtn = newSection.querySelector('.add-contact-item-btn[data-type="email"]');
-                    if (addEmailBtn) {
-                        addEmailBtn.addEventListener('click', function() {
-                            addContactItem(sectionId, 'email');
-                        });
-                    }
-                    
-                    // Contact item delete buttons
-                    const contactDeleteBtns = newSection.querySelectorAll('.contact-item-delete');
-                    contactDeleteBtns.forEach(btn => {
-                        btn.addEventListener('click', function() {
-                            deleteContactItem(this);
-                        });
-                    });
-                    
-                    // Initialize map
-                    setTimeout(() => {
-                        initMap(sectionId);
-                    }, 500);
-                    
-                    // Map search button
-                    const mapSearchBtn = newSection.querySelector('.search-map-btn');
-                    if (mapSearchBtn) {
-                        mapSearchBtn.addEventListener('click', function() {
-                            searchAddress(sectionId);
-                        });
-                    }
-                    
-                    // Map reset button
-                    const resetMapBtn = newSection.querySelector('.reset-map-btn');
-                    if (resetMapBtn) {
-                        resetMapBtn.addEventListener('click', function() {
-                            resetMap(sectionId);
-                        });
-                    }
-                }
+            // Contact section specific event listeners - این قسمت رو کامل جایگزین کن
+if (type === 'contact') {
+    // Add phone button - با event delegation
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.add-contact-item-btn[data-type="phone"]')) {
+            const btn = e.target.closest('.add-contact-item-btn[data-type="phone"]');
+            const sectionId = btn.getAttribute('data-section-id');
+            addContactItem(sectionId, 'phone');
+        }
+        
+        if (e.target.closest('.add-contact-item-btn[data-type="email"]')) {
+            const btn = e.target.closest('.add-contact-item-btn[data-type="email"]');
+            const sectionId = btn.getAttribute('data-section-id');
+            addContactItem(sectionId, 'email');
+        }
+    });
+    
+    // Contact item delete buttons با event delegation
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.contact-item-delete')) {
+            const deleteBtn = e.target.closest('.contact-item-delete');
+            deleteContactItem(deleteBtn);
+        }
+    });
+    
+    // Initialize map
+    setTimeout(() => {
+        initMap(sectionId);
+    }, 1000); // زمان بیشتر برای لود شدن المان
+    
+    // Map search button
+    const mapSearchBtn = newSection.querySelector('.search-map-btn');
+    if (mapSearchBtn) {
+        mapSearchBtn.addEventListener('click', function() {
+            searchAddress(sectionId);
+        });
+    }
+    
+    // Map reset button
+    const resetMapBtn = newSection.querySelector('.reset-map-btn');
+    if (resetMapBtn) {
+        resetMapBtn.addEventListener('click', function() {
+            resetMap(sectionId);
+        });
+    }
+}
             }, 100);
             
             // Add section to sections array
@@ -1682,4 +1681,5 @@ case 'contact':
     </script>
 </body>
 </html>
+
 
