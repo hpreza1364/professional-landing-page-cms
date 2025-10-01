@@ -634,60 +634,91 @@
                     `;
                     break;
                     
-                case 'contact':
-                    sectionHTML = `
-                        <section class="section" id="${sectionId}" data-section="contact">
-                            <div class="section-title">
-                                <div class="section-title-text" contenteditable="true">تماس با ما</div>
-                                <div class="delete-section" data-section-id="${sectionId}">حذف</div>
-                            </div>
-                            <div class="contact-map-section">
-                                <div class="contact-grid">
-                                    <div class="contact-item">
-                                        <div class="contact-icon">
-                                            <i class="fas fa-map-marker-alt"></i>
-                                        </div>
-                                        <div class="contact-info">
-                                            <h3 contenteditable="true">آدرس</h3>
-                                            <p contenteditable="true">تهران، خیابان ولیعصر، کوچه فلان، پلاک ۱۲۳</p>
-                                        </div>
-                                    </div>
-                                    <div class="contact-item">
-                                        <div class="contact-icon">
-                                            <i class="fas fa-phone"></i>
-                                        </div>
-                                        <div class="contact-info">
-                                            <h3 contenteditable="true">تلفن</h3>
-                                            <p contenteditable="true">۰۲۱-۱۲۳۴۵۶۷۸</p>
-                                        </div>
-                                    </div>
-                                    <div class="contact-item">
-                                        <div class="contact-icon">
-                                            <i class="fas fa-envelope"></i>
-                                        </div>
-                                        <div class="contact-info">
-                                            <h3 contenteditable="true">ایمیل</h3>
-                                            <p contenteditable="true">info@example.com</p>
-                                        </div>
-                                    </div>
+               // در تابع addSection، بخش contact رو با این کد جایگزین کن:
+case 'contact':
+    sectionHTML = `
+        <section class="section" id="${sectionId}" data-section="contact">
+            <div class="section-title">
+                <div class="section-title-text" contenteditable="true">تماس با ما</div>
+                <div class="delete-section" data-section-id="${sectionId}">حذف</div>
+            </div>
+            <div class="contact-map-section">
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-info">
+                            <h3 contenteditable="true">آدرس</h3>
+                            <p contenteditable="true">تهران، خیابان ولیعصر، کوچه فلان، پلاک ۱۲۳</p>
+                        </div>
+                    </div>
+                    
+                    <!-- تلفن‌ها -->
+                    <div class="contact-items-group">
+                        <div class="contact-group-header">
+                            <h3>تلفن‌های تماس</h3>
+                            <button class="add-contact-item-btn" data-type="phone">
+                                <i class="fas fa-plus"></i> افزودن تلفن
+                            </button>
+                        </div>
+                        <div class="contact-items-list" data-type="phone">
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-phone"></i>
                                 </div>
-                                <div class="map-container">
-                                    <div class="map-instructions">برای تغییر موقعیت روی نقشه کلیک کنید</div>
-                                    <div id="map-${sectionId}" style="height: 400px; background: var(--glass-bg); display: flex; align-items: center; justify-content: center; border-radius: 10px;">
-                                        <div style="text-align: center; color: var(--text-color);">
-                                            <i class="fas fa-map" style="font-size: 48px; margin-bottom: 10px; opacity: 0.5;"></i>
-                                            <p>نقشه در اینجا نمایش داده می‌شود</p>
-                                        </div>
-                                    </div>
-                                    <div class="map-controls">
-                                        <input type="text" id="mapSearch-${sectionId}" placeholder="جستجوی آدرس...">
-                                        <button data-section-id="${sectionId}">جستجو</button>
-                                    </div>
+                                <div class="contact-info">
+                                    <div contenteditable="true" class="contact-label">تلفن اصلی</div>
+                                    <p contenteditable="true">۰۲۱-۱۲۳۴۵۶۷۸</p>
+                                </div>
+                                <div class="contact-item-delete">
+                                    <i class="fas fa-times"></i>
                                 </div>
                             </div>
-                        </section>
-                    `;
-                    break;
+                        </div>
+                    </div>
+                    
+                    <!-- ایمیل‌ها -->
+                    <div class="contact-items-group">
+                        <div class="contact-group-header">
+                            <h3>آدرس‌های ایمیل</h3>
+                            <button class="add-contact-item-btn" data-type="email">
+                                <i class="fas fa-plus"></i> افزودن ایمیل
+                            </button>
+                        </div>
+                        <div class="contact-items-list" data-type="email">
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <div contenteditable="true" class="contact-label">ایمیل اصلی</div>
+                                    <p contenteditable="true">info@example.com</p>
+                                </div>
+                                <div class="contact-item-delete">
+                                    <i class="fas fa-times"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="map-container">
+                    <div class="map-instructions">
+                        <i class="fas fa-info-circle"></i>
+                        برای تغییر موقعیت روی نقشه کلیک کنید
+                    </div>
+                    <div id="map-${sectionId}" class="real-map"></div>
+                    <div class="map-controls">
+                        <input type="text" id="mapSearch-${sectionId}" placeholder="جستجوی آدرس (مثال: تهران، میدان آزادی)">
+                        <button data-section-id="${sectionId}">جستجو</button>
+                        <button class="reset-map-btn" data-section-id="${sectionId}">موقعیت پیش‌فرض</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    `;
+    break;
             }
             
             // Add section to the page
@@ -1470,3 +1501,4 @@
     </script>
 </body>
 </html>
+
